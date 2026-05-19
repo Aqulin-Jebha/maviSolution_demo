@@ -1,0 +1,205 @@
+
+<h2 class="sr-only">Add Expense form with client-side validation and Supabase integration logic</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{padding:2rem 1.5rem;max-width:520px;margin:0 auto}
+.profile-bar{display:flex;align-items:center;gap:10px;margin-bottom:2rem;padding:10px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary)}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--color-background-info);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--color-text-info);flex-shrink:0}
+.profile-name{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.profile-sub{font-size:12px;color:var(--color-text-secondary)}
+.badge{margin-left:auto;background:var(--color-background-success);color:var(--color-text-success);font-size:11px;padding:3px 10px;border-radius:var(--border-radius-md)}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.5rem}
+.card-header{margin-bottom:1.5rem}
+.card-title{font-size:18px;font-weight:500;color:var(--color-text-primary);display:flex;align-items:center;gap:8px}
+.card-title i{font-size:20px;color:var(--color-text-secondary)}
+.card-sub{font-size:13px;color:var(--color-text-secondary);margin-top:4px}
+.field{margin-bottom:1.25rem}
+label{display:block;font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px}
+.input-wrap{position:relative}
+.prefix{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--color-text-secondary);pointer-events:none}
+input,select,textarea{width:100%;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:14px;color:var(--color-text-primary);transition:border-color 0.15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--color-border-primary)}
+input[type=number].has-prefix{padding-left:28px}
+.error-msg{display:none;font-size:12px;color:var(--color-text-danger);margin-top:5px;align-items:center;gap:4px}
+.error-msg i{font-size:14px}
+.field.has-error input,.field.has-error select,.field.has-error textarea{border-color:var(--color-border-danger)}
+.field.has-error .error-msg{display:flex}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{width:100%;padding:10px;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;margin-top:0.5rem;border:0.5px solid var(--color-border-secondary);background:var(--color-text-primary);color:var(--color-background-primary)}
+.btn:hover{opacity:0.88}
+.btn:active{transform:scale(0.98)}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn-spinner{display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{display:none;align-items:center;gap:10px;padding:12px 14px;background:var(--color-background-success);border:0.5px solid var(--color-border-success);border-radius:var(--border-radius-md);margin-top:1rem;font-size:13px;color:var(--color-text-success)}
+.toast.error{background:var(--color-background-danger);border-color:var(--color-border-danger);color:var(--color-text-danger)}
+.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:1.25rem 0}
+.section-label{font-size:11px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px}
+</style>
+
+<div class="wrap">
+  <div class="profile-bar" id="profileBar">
+    <div class="avatar" id="avatarEl">JD</div>
+    <div>
+      <div class="profile-name" id="profileName">John Doe</div>
+      <div class="profile-sub" id="profileEmail">john@example.com</div>
+    </div>
+    <span class="badge"><i class="ti ti-circle-check" aria-hidden="true"></i> Connected</span>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="ti ti-receipt" aria-hidden="true"></i> Add expense</div>
+      <div class="card-sub">All fields are required before submission</div>
+    </div>
+
+    <div class="section-label">Expense details</div>
+
+    <div class="field" id="field-description">
+      <label for="description">Description</label>
+      <input type="text" id="description" placeholder="e.g. Lunch at café" autocomplete="off" />
+      <div class="error-msg" role="alert"><i class="ti ti-alert-circle" aria-hidden="true"></i><span>Description is required</span></div>
+    </div>
+
+    <div class="row">
+      <div class="field" id="field-amount">
+        <label for="amount">Amount</label>
+        <div class="input-wrap">
+          <span class="prefix">₹</span>
+          <input type="number" id="amount" class="has-prefix" placeholder="0.00" step="0.01" min="0" />
+        </div>
+        <div class="error-msg" role="alert"><i class="ti ti-alert-circle" aria-hidden="true"></i><span id="amountErrText">Amount is required</span></div>
+      </div>
+      <div class="field" id="field-category">
+        <label for="category">Category</label>
+        <select id="category">
+          <option value="">Select…</option>
+          <option value="food">Food & dining</option>
+          <option value="transport">Transport</option>
+          <option value="utilities">Utilities</option>
+          <option value="entertainment">Entertainment</option>
+          <option value="health">Health</option>
+          <option value="other">Other</option>
+        </select>
+        <div class="error-msg" role="alert"><i class="ti ti-alert-circle" aria-hidden="true"></i><span>Please select a category</span></div>
+      </div>
+    </div>
+
+    <div class="field" id="field-date">
+      <label for="expDate">Date</label>
+      <input type="date" id="expDate" />
+      <div class="error-msg" role="alert"><i class="ti ti-alert-circle" aria-hidden="true"></i><span>Date is required</span></div>
+    </div>
+
+    <hr class="divider" />
+
+    <button class="btn" id="submitBtn" onclick="handleSubmit()">
+      <span class="btn-spinner" id="spinner"></span>
+      <i class="ti ti-send" id="btnIcon" aria-hidden="true"></i>
+      <span id="btnText">Submit expense</span>
+    </button>
+
+    <div class="toast" id="toast" role="status">
+      <i class="ti ti-circle-check" id="toastIcon" aria-hidden="true"></i>
+      <span id="toastMsg">Expense added successfully!</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const rules = [
+  { id:'description', check: v => v.trim() !== '', errId: null },
+  { id:'amount',      check: v => v !== '' && parseFloat(v) > 0, errId:'amountErrText', errFn: v => v===''?'Amount is required':'Amount must be greater than 0' },
+  { id:'category',    check: v => v !== '', errId: null },
+  { id:'date',        check: v => v !== '', errId: null, fieldId:'field-date' }
+];
+
+function setError(fieldId, show, msg) {
+  const field = document.getElementById('field-'+fieldId) || document.getElementById(fieldId);
+  if (!field) return;
+  if (show) field.classList.add('has-error'); else field.classList.remove('has-error');
+  if (msg) { const el = field.querySelector('.error-msg span'); if(el) el.textContent = msg; }
+}
+
+function validate() {
+  let valid = true;
+  rules.forEach(r => {
+    const el = document.getElementById(r.id);
+    if (!el) return;
+    const ok = r.check(el.value);
+    const fid = r.fieldId || ('field-'+r.id);
+    if (!ok) {
+      const msg = r.errFn ? r.errFn(el.value) : null;
+      setError(fid, true, msg);
+      valid = false;
+    } else {
+      setError(fid, false);
+    }
+  });
+  return valid;
+}
+
+['description','amount','category','expDate'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', () => validate());
+  if (el) el.addEventListener('change', () => validate());
+});
+
+function showToast(success, msg) {
+  const t = document.getElementById('toast');
+  const ic = document.getElementById('toastIcon');
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = 'toast' + (success ? '' : ' error');
+  ic.className = success ? 'ti ti-circle-check' : 'ti ti-alert-triangle';
+  t.style.display = 'flex';
+  setTimeout(() => { t.style.display = 'none'; }, 3500);
+}
+
+async function mockSupabaseInsert(data) {
+  return new Promise(res => setTimeout(() => res({ error: null }), 1200));
+}
+
+async function fetchUserProfile() {
+  await new Promise(r => setTimeout(r, 400));
+  return { name:'Arjun Sharma', email:'arjun@company.io', initials:'AS' };
+}
+
+async function handleSubmit() {
+  if (!validate()) return;
+  const btn = document.getElementById('submitBtn');
+  const spinner = document.getElementById('spinner');
+  const btnIcon = document.getElementById('btnIcon');
+  const btnText = document.getElementById('btnText');
+  btn.disabled = true;
+  spinner.style.display = 'block';
+  btnIcon.style.display = 'none';
+  btnText.textContent = 'Saving…';
+  const payload = {
+    description: document.getElementById('description').value.trim(),
+    amount: parseFloat(document.getElementById('amount').value),
+    category: document.getElementById('category').value,
+    date: document.getElementById('expDate').value
+  };
+  const { error } = await mockSupabaseInsert(payload);
+  spinner.style.display = 'none';
+  btnIcon.style.display = '';
+  btn.disabled = false;
+  if (error) {
+    btnText.textContent = 'Submit expense';
+    showToast(false, 'Failed to save expense. Please try again.');
+  } else {
+    btnText.textContent = 'Submit expense';
+    showToast(true, `Expense of ₹${payload.amount.toFixed(2)} added successfully!`);
+    ['description','amount','category','expDate'].forEach(id => { document.getElementById(id).value = ''; });
+    rules.forEach(r => setError(r.fieldId || ('field-'+r.id), false));
+  }
+}
+
+(async () => {
+  const profile = await fetchUserProfile();
+  document.getElementById('profileName').textContent = profile.name;
+  document.getElementById('profileEmail').textContent = profile.email;
+  document.getElementById('avatarEl').textContent = profile.initials;
+  document.getElementById('expDate').value = new Date().toISOString().split('T')[0];
+})();
+</script>

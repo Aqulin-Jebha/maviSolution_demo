@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Expense Tracker — Add Expense</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0c0c0e;
+    --surface:  #131316;
+    --card:     #18181c;
+    --border:   #2a2a30;
+    --border2:  #36363e;
+    --text:     #f0f0f4;
+    --muted:    #7a7a88;
+    --subtle:   #3a3a44;
+    --accent:   #c8f04a;
+    --accent2:  #8bffc4;
+    --danger:   #ff5a5a;
+    --danger-bg:#2a1212;
+    --success:  #8bffc4;
+    --success-bg:#0e2420;
+    --radius:   10px;
+    --radius-lg:16px;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  body {
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(200,240,74,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 10% 80%, rgba(139,255,196,0.04) 0%, transparent 60%);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2.5rem 1rem 3rem;
+  }
+
+  .page { width: 100%; max-width: 520px; }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(0.75); }
+  }
+
+  .brand-name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── Profile chip ── */
+  .profile-chip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 14px 5px 5px;
+    transition: border-color 0.2s;
+  }
+  .profile-chip:hover { border-color: var(--border2); }
+
+  .avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c8f04a 0%, #8bffc4 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    color: #0c0c0e;
+    flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .profile-info { line-height: 1.25; }
+  .profile-name  { font-size: 13px; font-weight: 600; color: var(--text); }
+  .profile-email { font-size: 11px; color: var(--muted); }
+
+  .status-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 6px var(--accent2);
+    margin-left: 2px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    animation: slideUp 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-top {
+    padding: 1.5rem 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .card-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .tag {
+    background: rgba(200,240,74,0.1);
+    border: 1px solid rgba(200,240,74,0.2);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Form body ── */
+  .card-body { padding: 1.5rem; }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 14px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .field { margin-bottom: 1.1rem; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .input-wrap { position: relative; }
+
+  .prefix {
+    position: absolute; left: 13px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px; color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 13px;
+    font-size: 14px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    outline: none;
+    transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input::placeholder, textarea::placeholder { color: var(--subtle); }
+
+  input:hover, select:hover, textarea:hover { border-color: var(--border2); }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    background: #16161a;
+    box-shadow: 0 0 0 3px rgba(200,240,74,0.08);
+  }
+
+  input.has-prefix { padding-left: 30px; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7a88' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 34px;
+    cursor: pointer;
+  }
+
+  select option { background: #1e1e24; color: var(--text); }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.5);
+    cursor: pointer;
+  }
+
+  /* ── Error states ── */
+  .error-msg {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--danger);
+    margin-top: 5px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .error-msg svg { flex-shrink: 0; }
+
+  .field.has-error input,
+  .field.has-error select,
+  .field.has-error textarea {
+    border-color: var(--danger);
+    background: var(--danger-bg);
+    box-shadow: 0 0 0 3px rgba(255,90,90,0.08);
+  }
+
+  .field.has-error .error-msg { display: flex; }
+
+  /* ── Row grid ── */
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── Divider ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0.25rem 0 1.25rem;
+  }
+
+  /* ── Submit button ── */
+  .btn {
+    width: 100%;
+    padding: 12px 20px;
+    background: var(--accent);
+    color: #0c0c0e;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.15s, transform 0.12s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.15s;
+  }
+
+  .btn:hover { opacity: 0.92; box-shadow: 0 0 24px rgba(200,240,74,0.25); }
+  .btn:active { transform: scale(0.985); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
+
+  .spinner {
+    display: none;
+    width: 15px; height: 15px;
+    border: 2px solid rgba(12,12,14,0.3);
+    border-top-color: #0c0c0e;
+    border-radius: 50%;
+    animation: spin 0.65s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Toast ── */
+  .toast {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    margin-top: 12px;
+    font-size: 13px;
+    animation: fadeIn 0.25s ease;
+    font-family: 'DM Mono', monospace;
+  }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+
+  .toast.success {
+    background: var(--success-bg);
+    border: 1px solid rgba(139,255,196,0.2);
+    color: var(--success);
+  }
+
+  .toast.error {
+    background: var(--danger-bg);
+    border: 1px solid rgba(255,90,90,0.2);
+    color: var(--danger);
+  }
+
+  /* ── Progress bar hint ── */
+  .progress-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  /* ── Kbd hint ── */
+  .kbd-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--subtle);
+    margin-top: 12px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  kbd {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <span class="brand-name">Expensify</span>
+    </div>
+
+    <div class="profile-chip" id="profileChip">
+      <div class="avatar" id="avatarEl">AS</div>
+      <div class="profile-info">
+        <div class="profile-name" id="profileName">Arjun Sharma</div>
+        <div class="profile-email" id="profileEmail">arjun@company.io</div>
+      </div>
+      <div class="status-dot"></div>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="card">
+
+    <div class="card-top">
+      <div>
+        <div class="card-title">Add expense</div>
+        <div class="card-sub">// all fields required before submission</div>
+      </div>
+      <span class="tag">NEW</span>
+    </div>
+
+    <div class="card-body">
+
+      <p class="section-label">01 — Expense details</p>
+
+      <!-- Progress indicator -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+      <!-- Description -->
+      <div class="field" id="field-description">
+        <label for="description">Description</label>
+        <input type="text" id="description" placeholder="e.g. Lunch at café, AWS bill…" autocomplete="off" />
+        <div class="error-msg" role="alert">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Description is required</span>
+        </div>
+      </div>
+
+      <!-- Amount + Category -->
+      <div class="row">
+        <div class="field" id="field-amount">
+          <label for="amount">Amount</label>
+          <div class="input-wrap">
+            <span class="prefix">₹</span>
+            <input type="number" id="amount" class="has-prefix" placeholder="0.00" step="0.01" min="0.01" />
+          </div>
+          <div class="error-msg" role="alert">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="amountErrText">Amount is required</span>
+          </div>
+        </div>
+
+        <div class="field" id="field-category">
+          <label for="category">Category</label>
+          <select id="category">
+            <option value="">Select…</option>
+            <option value="food">Food & dining</option>
+            <option value="transport">Transport</option>
+            <option value="utilities">Utilities</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="health">Health</option>
+            <option value="other">Other</option>
+          </select>
+          <div class="error-msg" role="alert">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Please select a category</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div class="field" id="field-date">
+        <label for="expDate">Date</label>
+        <input type="date" id="expDate" />
+        <div class="error-msg" role="alert">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Date is required</span>
+        </div>
+      </div>
+
+      <!-- Notes (optional) -->
+      <div class="field">
+        <label for="notes">Notes <span style="color:var(--subtle);font-size:10px;text-transform:none;">(optional)</span></label>
+        <textarea id="notes" placeholder="Any extra context…" rows="2" style="resize:vertical;min-height:60px;"></textarea>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Submit -->
+      <button class="btn" id="submitBtn" onclick="handleSubmit()">
+        <div class="spinner" id="spinner"></div>
+        <svg id="btnIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <span id="btnText">Submit expense</span>
+      </button>
+
+      <div class="toast" id="toast" role="status">
+        <svg id="toastIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="toastMsg">Expense added successfully!</span>
+      </div>
+
+      <p class="kbd-hint">Press <kbd>⌘</kbd> + <kbd>↵</kbd> to submit</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ── Supabase client (replace with your real keys) ──────────────────────────
+   import { createClient } from '@supabase/supabase-js'
+   const supabase = createClient('https://YOUR_PROJECT.supabase.co', 'YOUR_ANON_KEY')
+──────────────────────────────────────────────────────────────────────────── */
+
+// ── Validation rules ────────────────────────────────────────────────────────
+const rules = [
+  {
+    id: 'description',
+    fieldId: 'field-description',
+    check: v => v.trim() !== '',
+    msg: () => 'Description is required'
+  },
+  {
+    id: 'amount',
+    fieldId: 'field-amount',
+    check: v => v !== '' && parseFloat(v) > 0,
+    msg: v => v === '' ? 'Amount is required' : 'Amount must be greater than 0',
+    errSpanId: 'amountErrText'
+  },
+  {
+    id: 'category',
+    fieldId: 'field-category',
+    check: v => v !== '',
+    msg: () => 'Please select a category'
+  },
+  {
+    id: 'expDate',
+    fieldId: 'field-date',
+    check: v => v !== '',
+    msg: () => 'Date is required'
+  }
+];
+
+function setError(rule, show) {
+  const field = document.getElementById(rule.fieldId);
+  if (!field) return;
+  if (show) {
+    field.classList.add('has-error');
+    const el = document.getElementById(rule.errSpanId || '') || field.querySelector('.error-msg span');
+    if (el) el.textContent = rule.msg(document.getElementById(rule.id)?.value || '');
+  } else {
+    field.classList.remove('has-error');
+  }
+}
+
+function countFilled() {
+  return rules.filter(r => {
+    const el = document.getElementById(r.id);
+    return el && r.check(el.value);
+  }).length;
+}
+
+function updateProgress() {
+  const pct = (countFilled() / rules.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function validate() {
+  let valid = true;
+  rules.forEach(r => {
+    const el = document.getElementById(r.id);
+    const ok = el && r.check(el.value);
+    setError(r, !ok);
+    if (!ok) valid = false;
+  });
+  return valid;
+}
+
+// Live feedback
+['description', 'amount', 'category', 'expDate'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input',  () => { validate(); updateProgress(); });
+  el.addEventListener('change', () => { validate(); updateProgress(); });
+});
+
+// Keyboard shortcut
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') handleSubmit();
+});
+
+// ── Toast ───────────────────────────────────────────────────────────────────
+function showToast(success, msg) {
+  const t   = document.getElementById('toast');
+  const ic  = document.getElementById('toastIcon');
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = 'toast ' + (success ? 'success' : 'error');
+  ic.innerHTML = success
+    ? '<polyline points="20 6 9 17 4 12"/>'
+    : '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>';
+  t.style.display = 'flex';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.display = 'none'; }, 4000);
+}
+
+// ── Mock Supabase INSERT ─────────────────────────────────────────────────────
+// Replace with: const { error } = await supabase.from('expenses').insert([payload])
+async function mockSupabaseInsert(payload) {
+  console.log('[Supabase] INSERT expenses →', payload);
+  return new Promise(res => setTimeout(() => res({ error: null }), 1300));
+}
+
+// ── Submit handler ───────────────────────────────────────────────────────────
+async function handleSubmit() {
+  if (!validate()) return;
+
+  const btn     = document.getElementById('submitBtn');
+  const spinner = document.getElementById('spinner');
+  const btnIcon = document.getElementById('btnIcon');
+  const btnText = document.getElementById('btnText');
+
+  btn.disabled = true;
+  spinner.style.display = 'block';
+  btnIcon.style.display = 'none';
+  btnText.textContent = 'Saving…';
+
+  const payload = {
+    description: document.getElementById('description').value.trim(),
+    amount:      parseFloat(document.getElementById('amount').value),
+    category:    document.getElementById('category').value,
+    date:        document.getElementById('expDate').value,
+    notes:       document.getElementById('notes').value.trim() || null,
+    // user_id: session.user.id   ← add after auth
+  };
+
+  const { error } = await mockSupabaseInsert(payload);
+
+  spinner.style.display = 'none';
+  btnIcon.style.display = '';
+  btn.disabled = false;
+  btnText.textContent = 'Submit expense';
+
+  if (error) {
+    showToast(false, 'Failed to save. Please try again.');
+  } else {
+    showToast(true, `₹${payload.amount.toFixed(2)} expense added!`);
+    ['description','amount','category','expDate','notes'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    rules.forEach(r => setError(r, false));
+    document.getElementById('progressFill').style.width = '0%';
+  }
+}
+
+// ── Fetch user profile (Supabase SELECT) ────────────────────────────────────
+// Real version:
+//   const { data: profile } = await supabase
+//     .from('profiles')
+//     .select('full_name, email, avatar_initials')
+//     .eq('id', session.user.id)
+//     .single()
+async function fetchUserProfile() {
+  await new Promise(r => setTimeout(r, 300));
+  return { name: 'Arjun Sharma', email: 'arjun@company.io', initials: 'AS' };
+}
+
+(async () => {
+  const profile = await fetchUserProfile();
+  document.getElementById('profileName').textContent  = profile.name;
+  document.getElementById('profileEmail').textContent = profile.email;
+  document.getElementById('avatarEl').textContent     = profile.initials;
+  document.getElementById('expDate').value = new Date().toISOString().split('T')[0];
+})();
+</script>
+
+</body>
+</html>
