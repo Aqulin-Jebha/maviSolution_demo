@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MaViSolution</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css">
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="logo">MaVi<span>Solution</span></div>
+  <div class="nav-links" id="navLinks">
+    <a href="#" onclick="showPage('home')">Home</a>
+    <a href="#" onclick="showPage('services')">Services</a>
+    <a href="#" onclick="showPage('about')">About</a>
+    <div id="navAuth"></div>
+  </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="badge">🚀 Next-Gen SRE &amp; DevOps Solutions</div>
+      <h1 class="hero-title">Engineering<br><span>High-Performance</span><br>Platforms</h1>
+      <p class="hero-sub">We specialize in Site Reliability Engineering, DevOps automation, and Cloud infrastructure — delivering rock-solid systems that scale without limits.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('auth')">Get Started</button>
+        <button class="btn-outline" onclick="showPage('services')">Our Services</button>
+      </div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-num">99.9%</div><div class="stat-label">Uptime SLA</div></div>
+        <div class="stat"><div class="stat-num">200+</div><div class="stat-label">Projects Delivered</div></div>
+        <div class="stat"><div class="stat-num">50+</div><div class="stat-label">Enterprise Clients</div></div>
+        <div class="stat"><div class="stat-num">20yr</div><div class="stat-label">Combined Experience</div></div>
+      </div>
+    </div>
+  </div>
+  <!-- Quick services preview -->
+  <section>
+    <div class="section-tag">What We Do</div>
+    <h2 class="section-title">Platform Engineering<br>at Every Layer</h2>
+    <p class="section-sub">From infrastructure automation to full observability stacks, we build and operate the systems your business depends on.</p>
+    <div class="services-grid">
+      <div class="service-card"><div class="service-icon">⚙️</div><h3>Site Reliability Engineering</h3><p>SLI/SLO design, error budgets, incident response, and runbook automation to keep your services always-on.</p></div>
+      <div class="service-card"><div class="service-icon">🔄</div><h3>DevOps &amp; CI/CD</h3><p>End-to-end pipeline automation with GitHub Actions, Jenkins, ArgoCD, and GitOps workflows.</p></div>
+      <div class="service-card"><div class="service-icon">☁️</div><h3>Cloud Infrastructure</h3><p>Multi-cloud architecture on AWS, GCP, and Azure with Terraform, Pulumi, and infrastructure-as-code.</p></div>
+      <div class="service-card"><div class="service-icon">🔍</div><h3>Observability</h3><p>Full-stack monitoring with Prometheus, Grafana, Datadog, and distributed tracing via OpenTelemetry.</p></div>
+      <div class="service-card"><div class="service-icon">🔒</div><h3>Security &amp; Compliance</h3><p>DevSecOps integration, vulnerability scanning, SIEM, and SOC 2 / ISO 27001 compliance automation.</p></div>
+      <div class="service-card"><div class="service-icon">🐳</div><h3>Kubernetes &amp; Containers</h3><p>Production-grade Kubernetes clusters, Helm chart management, and container security hardening.</p></div>
+    </div>
+  </section>
+  <footer>
+    <div class="logo-f">MaVi<span>Solution</span></div>
+    <p style="margin-top:.4rem">© 2025 MaViSolution. Engineering High-Performance Platforms.</p>
+  </footer>
+</div>
+
+<!-- SERVICES PAGE -->
+<div class="page" id="page-services">
+  <section style="max-width:1200px">
+    <div class="section-tag">Our Services</div>
+    <h2 class="section-title">Full-Spectrum Platform<br>Engineering Services</h2>
+    <p class="section-sub">Tailored solutions for startups, scale-ups, and enterprises — built by engineers, for engineers.</p>
+    <div class="services-grid">
+      <div class="service-card"><div class="service-icon">⚙️</div><h3>Site Reliability Engineering</h3><p>We embed SRE practices into your organization: SLO definition, error budget policies, on-call rotations, and blameless post-mortems. We reduce MTTR and boost system confidence.</p></div>
+      <div class="service-card"><div class="service-icon">🔄</div><h3>DevOps &amp; CI/CD Automation</h3><p>From monolith to microservices delivery — we build pipelines that ship code faster without sacrificing quality. GitHub Actions, CircleCI, ArgoCD, Spinnaker.</p></div>
+      <div class="service-card"><div class="service-icon">☁️</div><h3>Cloud &amp; Multi-Cloud</h3><p>Design, migrate, and optimize cloud workloads across AWS, GCP, and Azure. Cost optimization, FinOps practices, and hybrid-cloud architectures.</p></div>
+      <div class="service-card"><div class="service-icon">🔍</div><h3>Observability Stacks</h3><p>Build golden-signal dashboards, alerting pipelines, and distributed tracing so your team always knows what's happening in production.</p></div>
+      <div class="service-card"><div class="service-icon">🔒</div><h3>Security Engineering</h3><p>Shift-left security with automated SAST/DAST, secrets management with Vault, zero-trust networking, and compliance-as-code.</p></div>
+      <div class="service-card"><div class="service-icon">🐳</div><h3>Kubernetes Consulting</h3><p>EKS, GKE, AKS — we design clusters, write Helm charts, configure RBAC, and harden container workloads for production reliability.</p></div>
+      <div class="service-card"><div class="service-icon">📊</div><h3>FinOps &amp; Cost Engineering</h3><p>Identify cloud waste, implement rightsizing, reserved instance planning, and savings plans to cut your cloud bill by 30–50%.</p></div>
+      <div class="service-card"><div class="service-icon">🤖</div><h3>Automation &amp; IaC</h3><p>Infrastructure-as-code with Terraform and Pulumi, configuration management with Ansible, and full GitOps workflows.</p></div>
+    </div>
+    <div style="text-align:center;margin-top:3rem">
+      <button class="btn-primary" onclick="showPage('auth')">Start a Project →</button>
+    </div>
+  </section>
+  <footer>
+    <div class="logo-f">MaVi<span>Solution</span></div>
+    <p style="margin-top:.4rem">© 2025 MaViSolution. Engineering High-Performance Platforms.</p>
+  </footer>
+</div>
+
+<!-- ABOUT PAGE -->
+<div class="page" id="page-about">
+  <section>
+    <div class="about-grid">
+      <div>
+        <div class="section-tag">About Us</div>
+        <h2 class="section-title">Reliability is Our<br>Core Product</h2>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:1.25rem">MaViSolution was founded by SRE veterans from Google, AWS, and Stripe who believe that reliability isn't a feature — it's a foundation. We bring that same discipline to your organization.</p>
+        <ul class="about-list">
+          <li>20+ years combined SRE and platform engineering experience</li>
+          <li>Certified across AWS, GCP, Azure, and Kubernetes (CKA/CKAD)</li>
+          <li>100% project delivery track record across 200+ engagements</li>
+          <li>Embedded team model — we work like your own engineers</li>
+          <li>Blameless culture and post-mortem driven continuous improvement</li>
+        </ul>
+      </div>
+      <div class="about-visual">
+        <div class="metric-box"><div class="num">99.9%</div><div class="lbl">Uptime Achieved</div></div>
+        <div class="metric-box"><div class="num">200+</div><div class="lbl">Projects Delivered</div></div>
+        <div class="metric-box"><div class="num">50+</div><div class="lbl">Enterprise Clients</div></div>
+        <div class="metric-box"><div class="num">40%</div><div class="lbl">Avg Cost Reduction</div></div>
+        <div class="metric-box" style="grid-column:span 2"><div class="num">< 5min</div><div class="lbl">Average MTTR (Mean Time to Restore)</div></div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="logo-f">MaVi<span>Solution</span></div>
+    <p style="margin-top:.4rem">© 2025 MaViSolution. Engineering High-Performance Platforms.</p>
+  </footer>
+</div>
+
+<!-- AUTH PAGE -->
+<div class="page" id="page-auth">
+  <div class="auth-page">
+    <div class="auth-card" id="authCard">
+      <div id="authContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD PAGE -->
+<div class="page" id="page-dashboard">
+  <div class="dash-page">
+    <div class="dash-header">
+      <div>
+        <h2 id="dashTitle">Dashboard</h2>
+        <p id="dashSub" style="color:var(--muted);font-size:.875rem;margin-top:.2rem"></p>
+      </div>
+      <button class="btn-icon" onclick="logout()" style="padding:.5rem 1rem">Sign Out</button>
+    </div>
+    <div class="dash-tabs" id="dashTabs"></div>
+    <div id="dashContent"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModal(event)">
+  <div class="modal-box" id="modalBox" onclick="event.stopPropagation()">
+    <div id="modalContent"></div>
+  </div>
+</div>
+<script src="script.js"></script> 
+</body>
+</head>
